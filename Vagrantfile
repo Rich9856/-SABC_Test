@@ -78,7 +78,7 @@ Vagrant.configure("2") do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  config.vm.synced_folder "C:/Users/TANDA01/Documents/Vagrant_Ubuntu/vagrant_Sync", "/home/vagrant/vagrant-sync"
+  config.vm.synced_folder "nodejs-api/", "/home/vagrant/nodejs-api"
 
   # Disable the default share of the current code directory. Doing this
   # provides improved isolation between the vagrant box and your host
@@ -93,14 +93,14 @@ Vagrant.configure("2") do |config|
   #
    config.vm.provider "virtualbox" do |vb|
   #   # Display the VirtualBox GUI when booting the machine
-     vb.gui = true
+     vb.gui = false
   #
   #   # Customize the amount of memory on the VM:
      vb.memory = "2048"
+
+     vb.cpus = 1
    end
   #
-  # View the documentation for the provider you are using for more
-  # information on available options.
 
   # Enable provisioning with a shell script. Additional provisioners such as
   # Ansible, Chef, Docker, Puppet and Salt are also available. Please see the
