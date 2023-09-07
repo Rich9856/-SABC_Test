@@ -16,38 +16,70 @@ Vagrant.configure("2") do |config|
 
   config.vm.network "private_network", ip: "192.168.33.10"
   config.vm.hostname = "centos"
-  config.hostmanager.enabled = true
-  config.hostmanager.manage_host = true
 
-    config.vm.provision "shell", inline:
+  # Provisioning configuration to install Terraform
 
-        # Mise a jour des packages
-        sudo apt-get update
-        sudo apt-get install -y apache2
+  config.vm.provision "shell", inline: <<-SHELL
 
-        # Installation de Docker
-        sudo apt-get install -y docker.io
+    # Install Terraform
 
-        # Installation de Terraform
-        sudo apt-get install -y unzip
-        wget https://releases.hashicorp.com/terraform/0.15.4/terraform_0.15.4_linux_amd64.zip
-        unzip terraform_0.15.4_linux_amd64.zip
-        sudo mv terraform /usr/local/bin
+    wget https://releases.hashicorp.com/terraform/0.15.4/terraform_0.15.4_linux_amd64.zip
 
-        # Installation d'Ansible
-        sudo apt-get install -y software-properties-common
-        sudo apt-add-repository --yes --update ppa:ansible/ansible
-        sudo apt-get install -y ansible
+    unzip terraform_0.15.4_linux_amd64.zip
 
-        # Installation de Puppet
-        wget http://apt.puppet.com/puppet7-release-jammy.deb
-        sudo dpkg -i puppet7-release-jammy.deb
-        sudo apt update && sudo apt install puppet-agent
+    sudo mv terraform /usr/local/bin/
 
-  config.proxy.http = "http://proxy.example.com:8080"
-  config.proxy.https = "http://proxy.example.com:8080"
-  config.proxy.NO_PROXY = "localhost, 127.0.0.1"
+    rm terraform_0.15.4_linux_amd64.zip
 
+  SHELL
+
+
+  # Provisioning configuration to install Ansible
+
+  config.vm.provision "shell", inline: <<-SHELL
+
+    # Enable EPEL repository
+    sudo yum install -y epel-release
+
+    # Install Ansible
+
+    sudo yum update
+
+    sudo yum install -y ansible
+
+  SHELL
+
+
+  # Provisioning configuration to install Pulumi
+
+  config.vm.provision "shell", inline: <<-SHELL
+
+    # Install Pulumi
+
+    curl -fsSL https://get.pulumi.com | sh
+
+  SHELL
+
+
+
+ # Provisioning configuration to install Docker
+  config.vm.provision "shell", inline: <<-SHELL
+    # Install required packages
+    sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+
+    # Configure Docker repository
+    sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+    # Install Docker
+    sudo yum install -y docker-ce docker-ce-cli containerd.io
+
+    # Start and enable Docker service
+    sudo systemctl start docker
+    sudo systemctl enable docker
+  SHELL
+
+
+   config.vm.synced_folder "#{ENV['USERPROFILE']}/Documents", "/vagrant"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -78,7 +110,6 @@ Vagrant.configure("2") do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  config.vm.synced_folder "nodejs-api/", "/home/vagrant/nodejs-api"
 
   # Disable the default share of the current code directory. Doing this
   # provides improved isolation between the vagrant box and your host
