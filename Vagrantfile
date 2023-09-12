@@ -21,6 +21,15 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "shell", inline: <<-SHELL
 
+    # MAJ systeme et installation des modules
+
+    sudo yum update
+
+    sudo yum install -y wget
+
+    sudo yum install -y unzip
+
+
     # Install Terraform
 
     wget https://releases.hashicorp.com/terraform/0.15.4/terraform_0.15.4_linux_amd64.zip
@@ -42,8 +51,6 @@ Vagrant.configure("2") do |config|
     sudo yum install -y epel-release
 
     # Install Ansible
-
-    sudo yum update
 
     sudo yum install -y ansible
 
@@ -129,7 +136,7 @@ Vagrant.configure("2") do |config|
   #   # Customize the amount of memory on the VM:
      vb.memory = "2048"
 
-     vb.cpus = 1
+     vb.cpus = 2
    end
   #
 
