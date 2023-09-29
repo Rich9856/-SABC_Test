@@ -1,0 +1,14 @@
+---
+- hosts: node-4
+  become: yes
+
+  pre_tasks:
+    - name: Ensure pip3.11 is installed.
+      package: 
+       name: python-pip
+       state: present
+
+    - name: Ensure Openshift client in installed. 
+      pip:
+       name: pip3.11
+       state: present 
