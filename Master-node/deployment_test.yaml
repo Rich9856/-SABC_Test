@@ -1,0 +1,86 @@
+- name: Déploiement du serveur web Nginx
+  hosts: loalhost
+  tasks:
+    - name: Créer le déploiement Nginx
+      k8s:
+        definition: 
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: nginx-deployment
+            namespace: default
+          spec:
+            replicas: 1
+            selector:
+              matchLabels:
+                app: nginx
+            template:
+              metadata:
+                labels:
+                  app: nginx
+              spec:
+                containers:
+                - name: web
+                  image: nginx:latest
+                  ports:
+                  - containerPort: 8080
+
+- name: Déploiement du serveur MySQL
+  hosts: localhost
+  tasks:
+    - name: Créer le déploiement MySQL
+      k8s:
+        definition: 
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: mysql-deployment
+            namespace: default
+          spec:
+            replicas: 1
+            selector:
+              matchLabels:
+                app: mysql
+            template:
+              metadata:
+                labels:
+                  app: mysql
+              spec:
+                containers:
+                - name: mysql
+                  image: mysql:latest
+                  env:
+                    - name: MYSQL_ROOT_PASSWORD
+                      value: Kourtney98
+                  ports:
+                  - containerPort: 3306        
+
+- name: Déploiement du serveur PostgreSQL
+  hosts: localhost
+  tasks:
+    - name: Créer le déploiement PostgreSQL
+      k8s:
+        definition: 
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: postgres-deployment
+            namespace: default
+          spec:
+            replicas: 1
+            selector:
+              matchLabels:
+                app: postgres
+            template:
+              metadata:
+                labels:
+                  app: postgres
+              spec:
+                containers:
+                - name: postgres
+                  image: postgres:latest
+                  env:
+                    - name: POSTGRES_PASSWORD
+                      value: Kourtney98
+                  ports:
+                  - containerPort: 5432
